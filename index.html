@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b0b12">
+<meta name="description" content="Duty AI — turn your prompts into images, writing and ideas.">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<title>Duty AI — Creative Studio</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0b12;--panel:#14141f;--muted:#9ca3af;--purple:#a78bfa;--pink:#e879f9}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0%,#293b70 0%,#11152b 38%,var(--bg) 75%);color:#fff;font:16px system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+header{display:flex;align-items:center;justify-content:space-between;padding:16px max(18px,calc((100vw - 900px)/2));border-bottom:1px solid #ffffff17}
+.brand{display:flex;gap:10px;align-items:center;font-weight:800;font-size:19px}.logo{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;background:linear-gradient(135deg,#8b5cf6,#d946ef);font-size:21px}.tag{border:1px solid #a78bfa55;background:#8b5cf61b;color:#ddd6fe;border-radius:30px;padding:7px 11px;font-size:12px}
+main{max-width:760px;margin:auto;padding:38px 18px}.intro{text-align:center;margin-bottom:30px}.eyebrow{color:#c4b5fd;font-size:11px;font-weight:800;letter-spacing:.22em;text-transform:uppercase}.intro h1{font-size:clamp(34px,7vw,58px);line-height:1.08;letter-spacing:-.04em;margin:14px 0}.gradient{background:linear-gradient(90deg,#c4b5fd,#f0abfc);color:transparent;background-clip:text}.intro p{color:#c4c8d7;line-height:1.7;max-width:520px;margin:0 auto;font-size:14px}
+.label{font-size:11px;color:#9ca3af;letter-spacing:.15em;font-weight:800;text-transform:uppercase;margin:22px 0 10px}.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.mode{background:#ffffff08;border:1px solid #ffffff20;border-radius:14px;padding:13px;text-align:left;color:white;cursor:pointer}.mode.active{border-color:#a78bfa;background:#8b5cf626}.mode strong{display:block;font-size:14px;margin-top:7px}.mode small{display:block;color:#9ca3af;font-size:11px;margin-top:3px}
+textarea{width:100%;min-height:125px;resize:vertical;background:var(--panel);border:1px solid #ffffff20;border-radius:16px;padding:15px;color:white;font:14px/1.6 system-ui;outline:none}textarea:focus{border-color:var(--purple)}.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.chip{background:#ffffff08;border:1px solid #ffffff20;color:#ddd;border-radius:30px;padding:8px 11px;font-size:12px;cursor:pointer}
+.primary{width:100%;margin-top:17px;border:0;border-radius:13px;padding:15px;background:linear-gradient(100deg,#8b5cf6,#d946ef);color:white;font-weight:800;font-size:15px;cursor:pointer}.primary:disabled{opacity:.6}.status{text-align:center;font-size:12px;color:#9ca3af;line-height:1.6;margin-top:12px;min-height:20px}
+.result{margin-top:25px;border:1px solid #ffffff1c;border-radius:16px;background:#14141f;overflow:hidden}.result h2{font-size:15px;padding:0 16px}.result img{width:100%;height:auto;display:block;max-height:650px;object-fit:contain}.result-body{padding:16px;white-space:pre-wrap;line-height:1.75;font-size:14px;color:#e5e7eb}.result a{display:inline-block;margin:12px;color:#ddd6fe}.hidden{display:none!important}
+footer{text-align:center;border-top:1px solid #ffffff16;padding:20px;color:#73798b;font-size:12px}
+@media(min-width:600px){main{padding-top:50px}.mode{padding:16px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><span class="logo">D</span><span>Duty AI<span style="color:#a78bfa">.</span></span></div><span class="tag">✦ AI STUDIO</span></header>
+<main>
+<section class="intro"><div class="eyebrow">Imagine it. Type it. Create it.</div><h1>Your ideas,<br><span class="gradient">made real.</span></h1><p>Describe what you can imagine. Choose what to create and start bringing your idea to life.</p></section>
+<div class="label">01 / Choose creation mode</div>
+<div class="modes">
+<button class="mode active" data-mode="image"><span>🎨</span><strong>Image</strong><small>Create art</small></button>
+<button class="mode" data-mode="text"><span>✍️</span><strong>Text</strong><small>Write anything</small></button>
+<button class="mode" data-mode="idea"><span>💡</span><strong>Ideas</strong><small>Explore ideas</small></button>
+</div>
+<div class="label">02 / Describe your idea <span id="chars" style="float:right;letter-spacing:0;font-weight:400">0 / 500</span></div>
+<textarea id="prompt" maxlength="500" placeholder="A futuristic sports car on a neon-lit street at night, cinematic photography..."></textarea>
+<div class="chips"><button class="chip" data-prompt="A luxury black sports car in a neon-lit city, cinematic photography">🏎️ Car art</button><button class="chip" data-prompt="A dreamy purple galaxy with glowing stars and a beautiful planet, digital art">🌌 Galaxy</button><button class="chip" data-prompt="Write a short motivational speech about achieving big dreams">✨ Motivation</button></div>
+<button class="primary" id="generate">✦ &nbsp;Generate image&nbsp; →</button>
+<div class="status" id="status" role="status">Image generation requires an internet connection and an available image service.</div>
+<section id="result" class="result hidden"><h2 id="result-title">Your creation</h2><div id="image-wrap" class="hidden"><img id="output-image" alt="Generated image"><div class="result-body" id="caption"></div><a id="open-image" target="_blank" rel="noopener">Open image ↗</a></div><div id="text-output" class="result-body hidden"></div></section>
+</main>
+<footer>DUTY AI · YOUR IMAGINATION HAS NO LIMITS</footer>
+<script>
+(()=> {
+let mode='image'; const $=id=>document.getElementById(id);
+const prompt=$('prompt'),status=$('status'),btn=$('generate');
+const names={image:'Generate image',text:'Generate text',idea:'Generate ideas'};
+const placeholders={image:'A futuristic sports car on a neon-lit street at night, cinematic photography...',text:'Write a short story, a birthday message, a caption...',idea:'Ideas for a creative project, a business, or a school project...'};
+document.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{
+ mode=b.dataset.mode;
+ document.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('active',x===b));
+ btn.textContent='✦  '+names[mode]+'  →'; prompt.placeholder=placeholders[mode];
+ status.textContent=mode==='image'?'Image generation uses an external service.':mode==='text'?'Text mode creates a starter draft locally; connect a language model for full AI writing.':'Idea mode creates a starter outline locally; connect a language model for tailored ideas.';
+}));
+prompt.addEventListener('input',()=>$('chars').textContent=prompt.value.length+' / 500');
+document.querySelectorAll('[data-prompt]').forEach(b=>b.addEventListener('click',()=>{prompt.value=b.dataset.prompt;$('chars').textContent=prompt.value.length+' / 500';}));
+btn.addEventListener('click',()=>{
+ const p=prompt.value.trim(); if(!p){status.textContent='Type your idea first, then tap Generate.';prompt.focus();return;}
+ $('result').classList.add('hidden');$('image-wrap').classList.add('hidden');$('text-output').classList.add('hidden');
+ if(mode==='image'){
+  btn.disabled=true;status.textContent='Loading your image…';
+  const url='https://image.pollinations.ai/prompt/'+encodeURIComponent(p.slice(0,450))+'?width=1024&height=1024&model=flux&nologo=true';
+  const img=$('output-image');let finished=false;
+  const timeout=setTimeout(()=>{if(finished)return;finished=true;btn.disabled=false;status.textContent='The image service is taking too long. Check your connection and try again.';},60000);
+  img.onload=()=>{if(finished)return;finished=true;clearTimeout(timeout);btn.disabled=false;$('caption').textContent='Prompt: '+p;$('open-image').href=url;$('image-wrap').classList.remove('hidden');$('result-title').textContent='Your AI image';$('result').classList.remove('hidden');status.textContent='Image ready. Open the image in a new tab to save it.';};
+  img.onerror=()=>{if(finished)return;finished=true;clearTimeout(timeout);btn.disabled=false;status.textContent='Could not load the image service. It may be unavailable or blocked; try again later.';};
+  img.src=url;
+ }else{
+  const text=mode==='text'?'YOUR DRAFT\\n\\n'+p.replace(/[.!?]+$/,'')+'.\\n\\nAdd details to personalize this draft. This is a starter preview, not a response from a connected language model.':'IDEA STARTER\\n\\n1. Core concept\\n'+p+'\\n\\n2. Make it unique\\nTry a fresh style, surprising angle, or different audience.\\n\\n3. Build a first version\\nCreate a draft, get feedback, and improve it.\\n\\n4. Take it further\\nCombine two approaches to make your idea stand out.\\n\\nConnect a language model for tailored AI-generated content.';
+  $('text-output').textContent=text;$('text-output').classList.remove('hidden');$('result-title').textContent=mode==='text'?'Your text draft':'Your idea starter';$('result').classList.remove('hidden');status.textContent='Starter preview created. Full AI writing needs a language-model connection.';
+ }
+});
+if('serviceWorker' in navigator && location.protocol.startsWith('http')) window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+})();
+</script>
+</body></html>
